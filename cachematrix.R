@@ -1,15 +1,58 @@
-## Put comments here that give an overall description of what your
-## functions do
+## makeCacheMatrix() and cacheSolve() works together to cache and compute 
+## the inverse of a matrix, respectively
+## Assuming supplied matrix is always invertible
 
-## Write a short comment describing this function
+## makeCacheMatrix() is implemented as a generic caching fucntion of any object
+## makeCacheMatrix() takes a object (e.g. matrix) as argument and returns a 
+## list of functions for cacheSolve() to use 
+## The object to which the return value of this fucntion assigned also stores
+## variable "cache" in its environment
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  # Force the evaluation of function argument "x" b/c R uses lazy evaluaton 
+  # for function arguments by default, which means variable are only evaluated 
+  # when using. 
+  # force() is a useful defensive meseaure if the argument will 
+  # be captured in a closure by the lexical scoping rules and will later be 
+  # altered by an explicit assignment or an implicit assignment in a loop or 
+  # an apply function
+  force(x)
+  # Initialize "cache" variable to NULL object
+  cache <- NULL
+  # Returns a list of functions to be used in cacheSolve()
+  list(
+       set = function(y) {
+         x <<- y
+         cache <<- NULL
+       },
+       get = function() {
+         x
+       },
+       # Superassign "cache" with variable "object", any R object can be cached 
+       setcache = function(object) {
+         cache <<- object
+       },
+       getcache = function() {
+         cache
+       }
+  )
 }
 
-
-## Write a short comment describing this function
+## cacheSolve() takes the return object from makeCacheMatrix() as its argument
+## and returns the inverse of the input matrix
+## Returns an error message if input does not contain a matrix
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  cache <- x$getcache()
+  if(!is.null(cache)) {
+    message("getting cached data")
+    return(cache)
+  }
+  data <- x$get()
+  # Terminate program if x is not a matrix b/c solve() only works w/ matrix
+  if(!is.matrix(data)) stop("input must be a matrix")
+  # compute inverse of a matrix then returns it
+  cache <- solve(data, ...)
+  x$setcache(cache)
+  return(cache)
 }
