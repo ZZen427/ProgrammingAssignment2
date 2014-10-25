@@ -3,10 +3,11 @@
 ## Assuming supplied matrix is always invertible
 
 ## makeCacheMatrix() is implemented as a generic caching fucntion of any object
-## makeCacheMatrix() takes a object (e.g. matrix) as argument and returns a 
-## list of functions for cacheSolve() to use 
-## The object to which the return value of this fucntion assigned also stores
-## variable "cache" in its environment
+## makeCacheMatrix() takes an object (e.g. matrix) as argument and returns a 
+## list of functions that retrieve and modify the input object and the cached
+## object. 
+## Object to which the return of makeCacheMatrix() assigned also stores
+## variable "cache" in its environment to be used later on.
 
 makeCacheMatrix <- function(x = matrix()) {
   # Force the evaluation of function argument "x" b/c R uses lazy evaluaton 
@@ -38,9 +39,9 @@ makeCacheMatrix <- function(x = matrix()) {
   )
 }
 
-## cacheSolve() takes the return object from makeCacheMatrix() as its argument
-## and returns the inverse of the input matrix
-## Returns an error message if input does not contain a matrix
+## cacheSolve() takes the cache object returned from makeCacheMatrix() 
+## as its argument and returns the inverse of the matrix in the input object.
+## Returns an error message if input object does not contain a matrix
 
 cacheSolve <- function(x, ...) {
   cache <- x$getcache()
