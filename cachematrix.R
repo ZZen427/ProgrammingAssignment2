@@ -1,13 +1,13 @@
-## makeCacheMatrix() and cacheSolve() works together to cache and compute 
+## makeCacheMatrix() and cacheSolve() work together to cache and compute 
 ## the inverse of a matrix, respectively
-## Assuming supplied matrix is always invertible
+## Assume supplied matrix is always invertible
 
 ## makeCacheMatrix() is implemented as a generic caching fucntion of any object
 ## makeCacheMatrix() takes an object (e.g. matrix) as argument and returns a 
 ## list of functions that retrieve and modify the input object and the cached
 ## object. 
 ## Object to which the return of makeCacheMatrix() assigned also stores
-## variable "cache" in its environment to be used later on.
+## variable "cache" in its environment to be used later.
 
 makeCacheMatrix <- function(x = matrix()) {
   # Force the evaluation of function argument "x" b/c R uses lazy evaluaton 
@@ -23,14 +23,17 @@ makeCacheMatrix <- function(x = matrix()) {
   # Returns a list of functions to be used in cacheSolve()
   list(
        set = function(y) {
+         # superassign x with y in parent environment
          x <<- y
+         # superassign cache with NULL object in parent environment 
          cache <<- NULL
        },
        get = function() {
          x
        },
-       # Superassign "cache" with variable "object", any R object can be cached 
        setcache = function(object) {
+         # superassign cache w/ variable "object" showing that
+         # any kind of object can be cached 
          cache <<- object
        },
        getcache = function() {
